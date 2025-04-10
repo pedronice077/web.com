@@ -11,7 +11,7 @@ import { ContentObject, GlobalProps } from '@/types';
  * For example, when a page component iterates the section objects in its 'sections' content field,
  * it can create the actual component for each section using:
  *
- *     const component = <DynamicComponent {...section} />
+ *     const components: Record<string, ComponentType<DynamicComponentProps>> = { /* ... */ };
  *
  * Another feature of DynamicComponent is automatically wrapping the actual component with a Stackbit annotation,
  * if such is found in the content object (see annotateContentObject() in src/utils/content.ts).
@@ -34,7 +34,8 @@ export const DynamicComponent: React.FC<DynamicComponentProps> = (props) => {
 
     let Component = components[modelName] as ComponentType;
     if (!Component) {
-        throw new Error(`No component matches type: '${modelName}'`);
+    return <div>Error: Component for type '{modelName}' not found.</div>;
+}
     }
 
     return (
@@ -46,10 +47,13 @@ export const DynamicComponent: React.FC<DynamicComponentProps> = (props) => {
 
 const components = {
     CheckboxFormControl: dynamic(() => import('./molecules/FormBlock/CheckboxFormControl')),
+    EmailFormControl: dynamic(() => import('./molecules/FormBlock/EmailFormControl')),
+   };
+const sectionComponents = {
     ContactSection: dynamic(() => import('./sections/ContactSection')),
     CtaSection: dynamic(() => import('./sections/CtaSection')),
     DividerSection: dynamic(() => import('./sections/DividerSection')),
-    EmailFormControl: dynamic(() => import('./molecules/FormBlock/EmailFormControl')),
+ 
     FeaturedItem: dynamic(() => import('./sections/FeaturedItemsSection/FeaturedItem')),
     FeaturedItemsSection: dynamic(() => import('./sections/FeaturedItemsSection')),
     FeaturedPostsSection: dynamic(() => import('./sections/FeaturedPostsSection')),
